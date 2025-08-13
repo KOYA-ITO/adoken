@@ -12,9 +12,13 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Create sample data
 INSERT INTO users (username, email, password) VALUES 
-    ('admin', 'admin@example.com', '$2a$10$DowJonesHash'),
-    ('user1', 'user1@example.com', '$2a$10$SampleHash'),
-    ('user2', 'user2@example.com', '$2a$10$AnotherHash')
+    --('admin', 'admin@example.com', '$2a$10$DowJonesHash'),
+    --('user1', 'user1@example.com', '$2a$10$SampleHash'),
+    --('user2', 'user2@example.com', '$2a$10$AnotherHash')
+
+    ('admin', 'admin@example.com', 'a'),
+    ('user1', 'user1@example.com', 'a'),
+    ('user2', 'user2@example.com', 'a')
 ON CONFLICT DO NOTHING;
 
 -- Create index on email for faster lookups

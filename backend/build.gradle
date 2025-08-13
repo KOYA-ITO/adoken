@@ -1,38 +1,154 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.postgresql:postgresql:42.3.5"
+    }
+}
+ 
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.3'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id "org.springframework.boot" version "3.5.3"
+    id 'io.spring.dependency-management' version '1.1.7'
+    id "java"
+    id "org.seasar.doma.codegen" version "1.4.1"
+    id 'com.diffplug.eclipse.apt' version '4.3.0'
 }
-
-group = 'com'
-version = '0.0.1-SNAPSHOT'
-
+ 
+//group = "com.dentsusoken"
+//version = "0.0.1-SNAPSHOT"
+ 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
-
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+ 
+bootJar {
+    //archiveFileName = "adv-fat.jar"
+    archiveFileName = "backend.jar"
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+ 
 }
-
+jar {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+ 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
-
+ext {
+    packageRootName = "com.backend"
+    springVersion = "3.5.0"
+}
+ 
 dependencies {
-	// implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Spring Dependencies
+    implementation "org.springframework.boot:spring-boot-starter-jdbc:${springVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf:${springVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web:${springVersion}"
+    implementation "org.springframework.boot:spring-boot-devtools:${springVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${springVersion}"
+    // implementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity5"
+    implementation "org.postgresql:postgresql:42.3.5"
+    implementation "me.paulschwarz:spring-dotenv:4.0.0"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${springVersion}"
+    testImplementation "org.springframework.security:spring-security-test"
+    // testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    // testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    implementation "org.json:json:20250517"
+    
+    //Jjira参照して追加
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+ 
+    testCompileOnly 'org.projectlombok:lombok:1.18.32'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
+   
+}
+ 
+test {
+    useJUnitPlatform()
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
+apply from: "doma.gradle"
+apply from: "eclipse.gradle"
+
+
+
+
+
+
+
+
+
+//plugins {
+//	id 'java'
+//	id 'org.springframework.boot' version '3.5.3'
+//	id 'io.spring.dependency-management' version '1.1.7'
+//}
+//
+//group = 'com'
+//version = '0.0.1-SNAPSHOT'
+//
+//java {
+//	toolchain {
+//		languageVersion = JavaLanguageVersion.of(17)
+//	}
+//}
+//
+//configurations {
+//	compileOnly {
+//		extendsFrom annotationProcessor
+//	}
+//}
+//
+//repositories {
+//	mavenCentral()
+//}
+//
+//dependencies {
+//	// Spring Boot Webサポート
+//	implementation 'org.springframework.boot:spring-boot-starter-web'
+//
+//	// Lombokのサポート
+//	compileOnly 'org.projectlombok:lombok'
+//	annotationProcessor 'org.projectlombok:lombok'
+//
+//	// Spring Bootのテストサポート
+//	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//	testImplementation 'org.springframework.security:spring-security-test'
+//	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+//
+//	// Doma2本体とSpring Bootの統合スターター
+//	implementation 'org.seasar.doma:doma-core:3.11.0'
+//	annotationProcessor 'org.seasar.doma:doma-processor:3.11.0'  // Domaのアノテーションプロセッサ
+//
+//	// PostgreSQLドライバ
+//	implementation 'org.postgresql:postgresql:42.3.5'
+//
+//	// Spring BootのJDBCサポート（コメントアウトしているので必要ならば有効にする）
+//	// implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+//
+//	// Doma2とSpring Boot統合スターターパッケージ
+//	implementation 'org.seasar.doma.boot:doma-spring-boot-starter:1.4.0'
+//}
+//
+//sourceSets {
+//    main {
+//        resources {
+//            srcDirs = ['src/main/resources']
+//        }
+//    }
+//}
+//
+//// JavaクラスとSQLファイルの出力先ディレクトリを同じにする
+//processResources.destinationDir = compileJava.destinationDir
+//// コンパイルより前にSQLファイルを出力先ディレクトリにコピーするために依存関係を逆転する
+//compileJava.dependsOn processResources
+//
+//apply plugin: 'idea'
+//idea.module.inheritOutputDirs = true
+//
+//tasks.named('test') {
+//	useJUnitPlatform()
+//}

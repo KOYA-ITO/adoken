@@ -1,0 +1,48 @@
+task copyDomaResources(type: Sync)  {
+    from sourceSets.main.resources.srcDirs
+    into compileJava.destinationDirectory
+    include 'doma.compile.config'
+    include 'META-INF/**/*.sql'
+    include 'META-INF/**/*.script'
+}
+
+compileJava {
+    dependsOn copyDomaResources
+    options.encoding = 'UTF-8'
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs = ['-proc:none']
+}
+
+dependencies {
+  // Doma Dependencies
+  //追加
+  implementation 'org.seasar.doma.boot:doma-spring-boot-starter:2.4.0'
+    annotationProcessor "org.seasar.doma:doma-processor:3.8.0"
+    implementation "org.seasar.doma:doma-core:3.8.0"
+}
+
+//domaCodeGen {
+//    // make an arbitrary named block
+//    dev {
+//        // JDBC url
+//        url = project.properties["domaUrl"]
+//        // JDBC user
+//        user = project.properties["domaUser"]
+//        // JDBC password
+//        password = project.properties["domaPassword"]
+//        schemaName = "backend"
+//        // configuration for generated entity source files
+//        entity {
+//            packageName = project.properties["packageRootName"] + ".entity"
+//        }
+//        // configuration for generated DAO source files
+//        dao {
+//            packageName = project.properties["packageRootName"] + ".dao"
+//            overwrite = false
+//        }
+//        templateDir = file("$projectDir/src/main/resources/doma-gen-template")
+//    }
+//}

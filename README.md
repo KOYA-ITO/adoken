@@ -1,42 +1,60 @@
-# プロジェクト起動手順
-
+プロジェクト起動手順
 このプロジェクトは以下の構成で動作します：
-- **Backend**: Spring Boot (ポート: 8080)
-- **Frontend**: Next.js (ポート: 3000)
-- **Database**: PostgreSQL (ポート: 5432)
 
-※とーるさんのをベースに色々いじって構築しています。
+Backend: Spring Boot（ポート: 8080）
 
-## 起動方法
+Frontend: Next.js（ポート: 3000）
 
-### 1. postgresダウンロード・セットアップ
+Database: PostgreSQL（ポート: 5432）
 
-A)ローカルにインストール（Windows / macOS / Linux）
-公式インストーラ等で PostgreSQL をインストールし、psql が使えることを確認
-https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+※ とーるさんの構成をベースに調整しています。
+
+1. PostgreSQL のセットアップ
+A. ローカルにインストール（Windows / macOS / Linux）
+公式インストーラから PostgreSQL をインストール
+→ https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+
+psql が使えるか確認
 
 bash
+コピーする
+編集する
 psql --version
+サーバー起動（通常は自動起動）
 
-サーバー起動（通常は自動起動されます）
+Windows: サービス一覧で postgresql-XX を開始
 
-Windows: 「Services」で「postgresql-XX」開始
-macOS (Homebrew): brew services start postgresql
-Linux (systemd): sudo systemctl start postgresql
+macOS (Homebrew):
 
-B). mydb を作成
-ローカル
 bash
+コピーする
+編集する
+brew services start postgresql
+Linux (systemd):
+
+bash
+コピーする
+編集する
+sudo systemctl start postgresql
+セキュリティ注意：このプロジェクトの初期データは学習用で平文パスワードを含みます。本番では必ずハッシュ化されたパスワードを使用してください。
+
+B. データベース作成（mydb）
+bash
+コピーする
+編集する
 # postgres データベースに接続し、mydb を作成
 psql -U postgres -h localhost -p 5432 -d postgres -c "CREATE DATABASE mydb;"
+C. init.sql を流し込む
+リポジトリ直下に init.sql がある想定です。
 
-C). init.sql を流し込む
-ローカル
 bash
+コピーする
+編集する
 psql -U postgres -h localhost -p 5432 -d mydb -v ON_ERROR_STOP=1 -f ./init.sql
-
-D)5. 実行後の動作確認
+D. 実行後の動作確認
 bash
+コピーする
+編集する
 # テーブル一覧（public スキーマ）
 psql -U postgres -d mydb -c "\dt public.*"
 
@@ -46,9 +64,9 @@ psql -U postgres -d mydb -c "TABLE public.users;"
 # 行数・採番の確認
 psql -U postgres -d mydb -c "SELECT COUNT(*) FROM public.users;"
 psql -U postgres -d mydb -c "\d+ public.users"
-想定される初期データ（例）:
+想定される初期データ（例）
 
-sql
+text
 コピーする
 編集する
  id | username |        email         | password
@@ -56,35 +74,77 @@ sql
   1 | admin    | admin@example.com    | a
   2 | user1    | user1@example.com    | a
   3 | user2    | user2@example.com    | a
+2. バックエンド（Spring Boot）起動（Eclipse）
+Gradle の無限ループ対策（※重要）
+伊東は B の「◎」設定で解決
 
-
-### 2. Eclipseでバックエンド起動
-
-☆gradleの無限ループに陥ったときの対処法
-→伊東はBの◎で解決しました
 A. build.gradle を確認
-・id 'eclipse' を 削除（書いていたら）。
-・依存関係は既に annotationProcessor を使っているので OK（net.ltgt.apt などの旧APTプラグインは不要）。
 
-B. Eclipseの設定
-◎「ウィンドウ > 設定 > Gradle > 同期」
-  “ワークスペースを自動的にリフレッシュ” を オフ（まずは様子見; 重い環境で暴発しやすい）
-・「プロジェクト > プロパティ > Java コンパイラー > アノテーション処理」
-  有効にする（Enabled）
-・生成先: build/generated/sources/annotationProcessor/java/main を指定（無ければ追加）
+id 'eclipse' を削除（書いていたら）
+
+依存は annotationProcessor を使用（net.ltgt.apt など旧 APT プラグインは不要）
+
+B. Eclipse の設定
+
+ウィンドウ > 設定 > Gradle > 同期
+
+「ワークスペースを自動的にリフレッシュ」 を オフ（まずは様子見）
+
+プロジェクト > プロパティ > Java コンパイラー > アノテーション処理
+
+有効化（Enabled）
+
+生成先に build/generated/sources/annotationProcessor/java/main を指定（無ければ追加）
 
 C. プロジェクト操作
-・右クリック > Gradle > Refresh Gradle Project（これだけで.classpath等が整います）
-・以後、gradle eclipseやcleanEclipseは実行しない。
 
-### 3. VSCodeでフロントエンドサーバー起動
-ログインのusernameは「user1」
-パスワードは「a」(DB参照通り)
+右クリック → Gradle > Refresh Gradle Project（.classpath 等が整備されます）
 
+以後、gradle eclipse / cleanEclipse は実行しない
 
-### apendix.その他
-・8/14午後に、APIから受け取る練習用の実装やってみようかな(気分次第です僕は)
-・ChatGPTくん頼りまくりですあしからず。
-　ただつい先日リリースされたGPT5がめっちゃ優秀で、ソースちゃんと投げろって言ったらめちゃくちゃいい感じに返してくれるようになったので、よかったら使ってみてね。
- →運営的には出てきたコードそのまま理解せずに使うのが良くない、って感じだったので、ソース(情報源)求めたり、投げられたコード解説してって聞いて理解できればOKと個人的には思っています。
+その後、Eclipse の「実行」から Spring Boot アプリを起動（ポート 8080）。
 
+3. フロントエンド（Next.js）起動（VSCode など）
+bash
+コピーする
+編集する
+# プロジェクトの frontend ディレクトリへ
+cd frontend
+
+# 依存インストール
+npm install
+
+# 開発サーバー起動
+npm run dev
+# → http://localhost:3000
+ログイン情報（学習用）
+
+username: user1
+
+password: a （DB 初期化データと一致）
+
+Appendix
+8/14 午後、API から受け取る練習用の実装を試すかもしれません（気分次第です僕は）
+
+ChatGPT くん頼りがちですがご容赦を。直近リリースの GPT-5 がかなり優秀で、「ソース（情報源）を示して」と頼むと良い感じに返ってきます
+→ そのままコピペ運用は避け、出典の確認やコード解説を求めて理解して使う、が個人的ベストプラクティスです
+
+トラブルシュート（簡易）
+password authentication failed for user "postgres"
+→ パスワード再確認。開発用途なら一時的に:
+
+bash
+コピーする
+編集する
+PGPASSWORD=postgres psql -U postgres -h localhost -d mydb -f ./init.sql
+database "mydb" does not exist
+→ 「1-B. データベース作成」を実行してください
+
+これまでのデータを完全消去してやり直したい（開発用）
+
+bash
+コピーする
+編集する
+# （Docker で運用している場合の例）
+docker compose down -v && docker compose up -d
+-v でボリュームも削除＝データが消えます。注意してください。

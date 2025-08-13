@@ -1,24 +1,38 @@
-プロジェクト起動手順
-このプロジェクトは以下の構成で動作します：
+# プロジェクト起動手順
 
-Backend: Spring Boot（ポート: 8080）
+このプロジェクトは以下の構成で動作します。
 
-Frontend: Next.js（ポート: 3000）
+- **Backend**: Spring Boot（ポート: **8080**）
+- **Frontend**: Next.js（ポート: **3000**）
+- **Database**: PostgreSQL（ポート: **5432**）
 
-Database: PostgreSQL（ポート: 5432）
+> ※ とーるさんの構成をベースに調整しています。
 
-※ とーるさんの構成をベースに調整しています。
+---
 
-1. PostgreSQL のセットアップ
-A. ローカルにインストール（Windows / macOS / Linux）
-公式インストーラから PostgreSQL をインストール
-→ https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+## 目次
 
-psql が使えるか確認
+- [1. PostgreSQL のセットアップ](#1-postgresql-のセットアップ)
+  - [A. ローカルにインストール（Windows / macOS / Linux）](#a-ローカルにインストールwindows--macos--linux)
+  - [B. データベース作成（mydb）](#b-データベース作成mydb)
+  - [C. `init.sql` を流し込む](#c-initsql-を流し込む)
+  - [D. 実行後の動作確認](#d-実行後の動作確認)
+- [2. バックエンド（Spring Boot）起動（Eclipse）](#2-バックエンドspring-boot起動eclipse)
+  - [Gradle の無限ループ対策](#gradle-の無限ループ対策)
+- [3. フロントエンド（Next.js）起動（VSCode など）](#3-フロントエンドnextjs起動vscode-など)
+- [Appendix / メモ](#appendix--メモ)
 
-bash
-コピーする
-編集する
+---
+
+## 1. PostgreSQL のセットアップ
+
+### A. ローカルにインストール（Windows / macOS / Linux）
+
+1. 公式インストーラで PostgreSQL をインストール  
+   <https://www.enterprisedb.com/downloads/postgres-postgresql-downloads>
+
+2. `psql` が使えるか確認
+```bash
 psql --version
 サーバー起動（通常は自動起動）
 

@@ -19,6 +19,20 @@ export default function UserBar() {
           '（未取得）'
         )}
       </span>
+      <>
+
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault()
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
+            // 明示的に /api/auth/check を未認証状態に
+            location.href = '/login'
+          }}
+        >
+          <button type="submit">ログアウト</button>
+        </form>
+      </>
     </div>
+
   )
 }

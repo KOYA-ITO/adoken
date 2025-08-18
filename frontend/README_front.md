@@ -174,3 +174,5 @@ app/
 - **状態は最小限だけ**（ここでは `selectedId`）
 - **必要な項目だけを描画**（DTOで最小化＋UIで取捨選択）
 - **保護ページは Authガード**（`/api/auth/check` で 401→/login）
+
+- https://chatgpt.com/share/68a3305d-431c-8004-80bd-1253552bb4e5
